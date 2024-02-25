@@ -2,6 +2,7 @@
 
 An automation to make Minecraft resourcepacks of minute-level-accurate clock.  
 能自动合成分钟级精确时钟的Minecraft资源包的脚本。
+![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/demo.png)
 
 ## Usage & Requirements 用法与依赖
 
