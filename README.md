@@ -28,7 +28,7 @@ Before running the script:
 Then, change the directory of the terminal to the root of this project (the same directory of file ACC.py) and run  
 之后，将终端的路径改为本项目根目录（与ACC.py文件同一目录）并且运行
 ```
-    python .\ACC.py
+python .\ACC.py
 ```
 Wait until the program successfully completes, the generated files can be found in **outputs/**  
 等待程序成功完成，生成的文件将出现在 **outputs/** 中
