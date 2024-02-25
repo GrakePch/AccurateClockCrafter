@@ -6,6 +6,7 @@ import copy
 
 MODE = "d" # Digital Clock
 SCALE_IN_1_HOUR = 1
+PACK_ICON_TIME = (9, 30)
 # To make sure tick X000 => YY:00 not ZZ:59, offset a bit ahead. 
 # Only for 6000<t<18000, t==4000, 5000
 CORRECTION = 1/1440
@@ -125,7 +126,8 @@ if MODE == "d":
             t_result.paste(t_minuteDigit1[m1], (0, 0), mask=t_minuteDigit1[m1])
             t_result.paste(t_minuteDigit2[m2], (0, 0), mask=t_minuteDigit2[m2])
             t_result.save(r"./outputs/assets/minecraft/textures/item/clock_" + formatTime(h, m) + r".png")
-            if h == 20 and m == 24:
+            # Generate pack.png
+            if h == PACK_ICON_TIME[0] and m == PACK_ICON_TIME[1]:
                 t_result.save(r"./outputs/pack.png")
             c += 1
 
