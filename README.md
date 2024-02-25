@@ -34,6 +34,11 @@ python .\ACC.py
 Wait until the program successfully completes, the generated files can be found in **outputs/**  
 等待程序成功完成，生成的文件将出现在 **outputs/** 中
 
+## Templates 模板
+
+There are several templates of inputs in **inputs_templates/**. Copy one of them into **inputs/** and run the script to get a usable resourcepack as references.  
+**inputs_templates/** 中有若干模板。将其中一个复制到 **inputs/** 中并且运行脚本以获得可用的资源包供参考。
+
 ## TODOs
 
 - Support of making analog clock.
