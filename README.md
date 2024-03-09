@@ -1,7 +1,7 @@
 # Accurate Clock Crafter 精准时钟合成器
 
 An automation to make Minecraft resourcepacks of minute-level-accurate clock.  
-能自动合成分钟级精确时钟的Minecraft资源包的脚本。
+[[简体中文]](https://github.com/GrakePch/AccurateClockCrafter/blob/master/README_CN.md)
 ![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/demo.png)
 
 ## Usage & Requirements
@@ -40,19 +40,25 @@ The configuration code `"acc_config": {...}` will not appear in the generated pa
 ```json
 {
   "pack": {
-    "pack_format": [pack format],
-    "description": [your description]
+    "pack_format": "[pack format]",
+    "description": "[your description]"
   },
   "acc_config": {
-    "mode": "d",                // "d": Digital; "a": Analog
-    "is_hour_higher": false,    // false: hour layer is lower than minute layer
-                                // true: hour layer is higher than minute layer
-    "pack_icon_time": [9, 30],  // [HH, MM]: Use the texture of HHMM as pack.png
+    "mode": "d",
+    "is_hour_higher": false,
+    "pack_icon_time": [9, 30]
   }
 }
 
 ```
-
+- `"mode":`
+    - `"d"`: Digital (default)
+    - `"a"`: Analog
+- `"is_hour_higher":`
+    - `false`: hour layer is lower than minute layer (default)
+    - `true`: hour layer is higher than minute layer
+- `"pack_icon_time": [HH, MM]`
+    - Use the texture of HHMM as pack.png (default is [9, 30])
 ## Templates
 
 There are several templates of inputs in **inputs_templates/**. Copy one of the folder under **inputs_templates/** to **inputs/** and run the script to get a usable resourcepack as references.

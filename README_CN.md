@@ -38,18 +38,26 @@ python .\ACC.py
 ```json
 {
   "pack": {
-    "pack_format": [pack format],
-    "description": [your description]
+    "pack_format": "[pack format]",
+    "description": "[your description]"
   },
   "acc_config": {
-    "mode": "d",                // "d": 数位时钟; "a": 指针时钟
-    "is_hour_higher": false,    // false: 时针的图层低于分针
-                                // true: 时针的图层高于分针
-    "pack_icon_time": [9, 30],  // [HH, MM]: 使用 HHMM 时刻的贴图作为 pack.png
+    "mode": "d",                // "d": ; "a": 
+    "is_hour_higher": false,    // false: 
+                                // true: 
+    "pack_icon_time": [9, 30],  // [HH, MM]: 
   }
 }
 
 ```
+- `"mode":`
+    - `"d"`: 数位时钟 (默认)
+    - `"a"`: 指针时钟
+- `"is_hour_higher":`
+    - `false`: 时针的图层低于分针 (默认)
+    - `true`: 时针的图层高于分针
+- `"pack_icon_time": [HH, MM]`
+    - 使用 HHMM 时刻的贴图作为 pack.png（默认值为 [9, 30]）
 
 ## 模板
 
