@@ -42,10 +42,9 @@ python .\ACC.py
     "description": "[your description]"
   },
   "acc_config": {
-    "mode": "d",                // "d": ; "a": 
-    "is_hour_higher": false,    // false: 
-                                // true: 
-    "pack_icon_time": [9, 30],  // [HH, MM]: 
+    "mode": "d",
+    "is_hour_higher": false,
+    "pack_icon_time": [9, 30]
   }
 }
 
