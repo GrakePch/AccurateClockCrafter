@@ -1,7 +1,7 @@
 # 精准时钟合成器
  
 能自动合成分钟级精确时钟的Minecraft资源包的脚本。
-![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/demo.png)
+![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/styles.png)
 
 ## 用法与依赖
 

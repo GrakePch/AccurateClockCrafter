@@ -2,7 +2,7 @@
 
 An automation to make Minecraft resourcepacks of minute-level-accurate clock.  
 [[简体中文]](https://github.com/GrakePch/AccurateClockCrafter/blob/master/README_CN.md)
-![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/demo.png)
+![demo](https://raw.githubusercontent.com/GrakePch/AccurateClockCrafter/master/images/styles.png)
 
 ## Usage & Requirements
 
