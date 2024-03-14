@@ -6,12 +6,13 @@ import copy
 import os
 import shutil
 from modules.AccurateHours import genAccurateHour
-from modules.Utils import interp
+from modules.Utils import interp, mask_subtract
 
 CONFIG = {
     "mode": "d",                # d: Digital; a: Analog
     "is_hour_higher": False,    # True: hour layer is higher than minute layer
     "pack_icon_time": [9, 30],  # [HH, MM]: Use the texture of HHMM as pack.png
+    "optifine_emissive": "_e",  # define the filename suffix for OptiFine emissive textures
 }
     
 pack = {
@@ -136,13 +137,13 @@ elif CONFIG["mode"] == "a":
         
     for h in range(0, 24):
         t_result_hour_only = t_bg.copy()
-        if CONFIG["is_hour_higher"] == False:
-            t_result_hour_only.paste(list_h_texture[h], (0, 0), mask=list_h_texture[h])
+        t_result_hour_only.paste(list_h_texture[h], (0, 0), mask=list_h_texture[h])
         for m in list_m:
             t_result = t_result_hour_only.copy()
-            t_result.paste(dict_m_texture[m], (0, 0), mask=dict_m_texture[m])
-            if CONFIG["is_hour_higher"] == True:
-                t_result.paste(list_h_texture[h], (0, 0), mask=list_h_texture[h])
+            t_result.paste(dict_m_texture[m], (0, 0), mask=
+                           mask_subtract(dict_m_texture[m], list_h_texture[h]) 
+                           if CONFIG["is_hour_higher"] 
+                           else dict_m_texture[m])
             t_result.save("./outputs/{}/assets/minecraft/textures/item/clock_{}.png".format(pack_dir, formatTime(h, m)))
             # Generate pack.png
             if h == CONFIG["pack_icon_time"][0] and m == CONFIG["pack_icon_time"][1]:
