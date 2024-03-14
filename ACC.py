@@ -64,6 +64,7 @@ except:
 # Create directories
 pathlib.Path('./outputs/{}/assets/minecraft/textures/item/'.format(pack_dir)).mkdir(parents=True, exist_ok=True)
 pathlib.Path('./outputs/{}/assets/minecraft/models/item/'.format(pack_dir)).mkdir(parents=True, exist_ok=True)
+pathlib.Path('./outputs/{}/assets/minecraft/optifine/'.format(pack_dir)).mkdir(parents=True, exist_ok=True)
 
 t_bg = Image.open("./inputs/{}/bg.png".format(pack_dir))
 
@@ -82,6 +83,8 @@ def getMinuteFromPNG(name):
         return -1
 
 print("===Crafting Clock Start===")
+
+does_emissive_texture_exist = False
 
 list_m = []
 if CONFIG["mode"] == "d":
@@ -131,9 +134,22 @@ elif CONFIG["mode"] == "a":
     c = 0
     list_h_texture = [Image.open("./inputs/{}/h/{}.png".format(pack_dir, h)) 
                         for h in range(0, 24)]
+    list_h_texture_e = []  # List of emissive textures of hours if exists
+    for h in range(0, 24):
+        try:
+            list_h_texture_e.append(Image.open("./inputs/{}/h/{}{}.png".format(pack_dir, h, CONFIG["optifine_emissive"])))
+            does_emissive_texture_exist = True
+        except:
+            list_h_texture_e.append(None)
     dict_m_texture = dict()
+    dict_m_texture_e = dict()  # dict of emissive textures of minutes if exists
     for m, m_png in dict_m_png.items():
         dict_m_texture[m] = Image.open("./inputs/{}/m/{}".format(pack_dir, m_png))
+        try:
+            dict_m_texture_e[m] = Image.open("./inputs/{}/m/{}{}.png".format(pack_dir, m_png[:-4], CONFIG["optifine_emissive"]))
+            does_emissive_texture_exist = True
+        except:
+            dict_m_texture_e[m] = None
         
     for h in range(0, 24):
         t_result_hour_only = t_bg.copy()
@@ -145,11 +161,30 @@ elif CONFIG["mode"] == "a":
                            if CONFIG["is_hour_higher"] 
                            else dict_m_texture[m])
             t_result.save("./outputs/{}/assets/minecraft/textures/item/clock_{}.png".format(pack_dir, formatTime(h, m)))
+            
+            # Generate emissive texture for HH:MM
+            if (list_h_texture_e[h] is not None) or (dict_m_texture_e[m] is not None):
+                t_emissive = Image.new("RGBA", t_bg.size)
+                if list_h_texture_e[h] is not None:
+                    t_emissive.paste(list_h_texture_e[h], (0, 0), mask=
+                                     list_h_texture_e[h]
+                                     if CONFIG["is_hour_higher"]
+                                     else mask_subtract(list_h_texture_e[h], dict_m_texture[m]))
+                if dict_m_texture_e[m] is not None:
+                    t_emissive.paste(dict_m_texture_e[m], (0, 0), mask=
+                                     mask_subtract(dict_m_texture_e[m], list_h_texture[h])
+                                     if CONFIG["is_hour_higher"]
+                                     else dict_m_texture_e[m])
+                t_emissive.save("./outputs/{}/assets/minecraft/textures/item/clock_{}{}.png".format(pack_dir, formatTime(h, m), CONFIG["optifine_emissive"]))
+                
             # Generate pack.png
             if h == CONFIG["pack_icon_time"][0] and m == CONFIG["pack_icon_time"][1]:
                 t_result.save("./outputs/{}/pack.png".format(pack_dir))
             c += 1  
         
+if does_emissive_texture_exist:
+    with open("./outputs/{}/assets/minecraft/optifine/emissive.properties".format(pack_dir), "w") as f:
+        f.write("suffix.emissive=" + CONFIG["optifine_emissive"])
 
 print("Done.", c, "texture files created.")
 print("Generating Model Jsons... ", end='')
