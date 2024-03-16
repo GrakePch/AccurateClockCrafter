@@ -148,8 +148,8 @@ if CONFIG["mode"] == "d":
                                              mask_subtract(
                                                 t_bg_e,
                                                 list_h_texture[h]), 
-                                             list_t_m_digit1),
-                                         list_t_m_digit2))
+                                             list_t_m_digit1[m1]),
+                                         list_t_m_digit2[m2]))
                 if list_h_texture_e[h] is not None:
                     t_emissive.paste(list_h_texture_e[h], (0, 0), mask=
                                      list_h_texture_e[h]
