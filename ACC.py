@@ -6,7 +6,7 @@ import copy
 import os
 import shutil
 from modules.AccurateHours import genAccurateHour
-from modules.Utils import interp, mask_subtract
+from modules.Utils import *
 
 CONFIG = {
     "mode": "d",                # d: Digital; a: Analog
@@ -48,6 +48,7 @@ except:
 print("  mode:           {}".format(CONFIG["mode"]))
 print("  is_hour_higher: {}".format(CONFIG["is_hour_higher"]))
 print("  pack_icon_time: {}".format(CONFIG["pack_icon_time"]))
+print("  optifine_emissive: {}".format(CONFIG["optifine_emissive"]))
 
 
 # Read arguments 
@@ -67,20 +68,14 @@ pathlib.Path('./outputs/{}/assets/minecraft/models/item/'.format(pack_dir)).mkdi
 pathlib.Path('./outputs/{}/assets/minecraft/optifine/'.format(pack_dir)).mkdir(parents=True, exist_ok=True)
 
 t_bg = Image.open("./inputs/{}/bg.png".format(pack_dir))
-
-def formatTime(h, m):
-    return "{:02d}{:02d}".format(h, m)
-
-def getMinuteFromPNG(name):
-    if not name.endswith(".png"): return -1
-    try:
-        m = int(name[0:-4])
-        if 0 <= m < 60:
-            return int(name[0:-4])
-        else:
-            return -1
-    except:
-        return -1
+    
+# check if bg_e.png exists
+t_bg_e = None
+try:
+    t_bg_e = Image.open("./inputs/{}/bg_e.png".format(pack_dir))
+    does_emissive_texture_exist = True
+except:
+    t_bg_e = None
 
 print("===Crafting Clock Start===")
 
@@ -89,27 +84,93 @@ does_emissive_texture_exist = False
 list_m = []
 if CONFIG["mode"] == "d":
 
+    print("Reading Textures... ", end='')
+    list_h_texture = []    # List of color textures of hours if exists
+    list_h_texture_e = []  # List of emissive textures of hours if exists
+    for h in range(0, 24):
+        list_h_texture.append(Image.open("./inputs/{}/h/{}.png".format(pack_dir, h)))
+        try:
+            list_h_texture_e.append(Image.open("./inputs/{}/h/{}{}.png".format(pack_dir, h, CONFIG["optifine_emissive"])))
+            does_emissive_texture_exist = True
+        except:
+            list_h_texture_e.append(None)
+    list_t_m_digit1 = []    # List of color textures of minutes' digit 1 if exists
+    list_t_m_digit1_e = []  # List of emissive textures of minutes' digit 1 if exists
+    for m1 in range(0, 6):
+        list_t_m_digit1.append(Image.open("./inputs/{}/m1/{}.png".format(pack_dir, m1)))
+        try:
+            list_t_m_digit1_e.append(Image.open("./inputs/{}/m1/{}{}.png".format(pack_dir, m1, CONFIG["optifine_emissive"])))
+            does_emissive_texture_exist = True
+        except:
+            list_t_m_digit1_e.append(None)
+    list_t_m_digit2 = []    # List of color textures of minutes' digit 2 if exists
+    list_t_m_digit2_e = []  # List of emissive textures of minutes' digit 2 if exists
+    for m2 in range(0, 10):
+        list_t_m_digit2.append(Image.open("./inputs/{}/m2/{}.png".format(pack_dir, m2)))
+        try:
+            list_t_m_digit2_e.append(Image.open("./inputs/{}/m2/{}{}.png".format(pack_dir, m2, CONFIG["optifine_emissive"])))
+            does_emissive_texture_exist = True
+        except:
+            list_t_m_digit2_e.append(None)
+    print("Done.")
+
     print("Generating Textures... ", end='')
     c = 0
-    t_minuteDigit1 = []
-    t_minuteDigit2 = []
-    for m1 in range(0, 6):
-        t_minuteDigit1.append(Image.open("./inputs/{}/m1/{}.png".format(pack_dir, m1)))
-    for m2 in range(0, 10):
-        t_minuteDigit2.append(Image.open("./inputs/{}/m2/{}.png".format(pack_dir, m2)))
 
     list_m = list(range(0, 60))
     for h in range(0, 24):
         t_result_hour_only = t_bg.copy()
-        t_hour = Image.open("./inputs/{}/h/{}.png".format(pack_dir, h))
-        t_result_hour_only.paste(t_hour, (0, 0), mask=t_hour)
+        t_result_hour_only.paste(list_h_texture[h], (0, 0), mask=list_h_texture[h])
         for m in range(0, 60):
             t_result = t_result_hour_only.copy()
             m1 = m // 10
             m2 = m % 10
-            t_result.paste(t_minuteDigit1[m1], (0, 0), mask=t_minuteDigit1[m1])
-            t_result.paste(t_minuteDigit2[m2], (0, 0), mask=t_minuteDigit2[m2])
+            t_result.paste(list_t_m_digit1[m1], (0, 0), mask=
+                           mask_subtract(list_t_m_digit1[m1], list_h_texture[h])
+                           if CONFIG["is_hour_higher"]
+                           else list_t_m_digit1[m1])
+            t_result.paste(list_t_m_digit2[m2], (0, 0), mask=
+                           mask_subtract(list_t_m_digit2[m2], list_h_texture[h])
+                           if CONFIG["is_hour_higher"]
+                           else list_t_m_digit2[m2])
             t_result.save("./outputs/{}/assets/minecraft/textures/item/clock_{}.png".format(pack_dir, formatTime(h, m)))
+            
+            # Generate emissive texture for HH:MM
+            if ((t_bg_e is not None)
+                or (list_h_texture_e[h] is not None)
+                or (list_t_m_digit1_e[m1] is not None)
+                or (list_t_m_digit2_e[m2] is not None)):
+                t_emissive = Image.new("RGBA", t_bg.size)
+                if t_bg_e is not None:
+                    t_emissive.paste(t_bg_e, (0, 0), mask=
+                                     mask_subtract(
+                                         mask_subtract(
+                                             mask_subtract(
+                                                t_bg_e,
+                                                list_h_texture[h]), 
+                                             list_t_m_digit1),
+                                         list_t_m_digit2))
+                if list_h_texture_e[h] is not None:
+                    t_emissive.paste(list_h_texture_e[h], (0, 0), mask=
+                                     list_h_texture_e[h]
+                                     if CONFIG["is_hour_higher"]
+                                     else mask_subtract(
+                                         mask_subtract(
+                                             list_h_texture_e[h],
+                                             list_t_m_digit1[m1]),
+                                         list_t_m_digit2[m2]))
+                if list_t_m_digit1_e[m1] is not None:
+                    t_emissive.paste(list_t_m_digit1_e[m1], (0, 0), mask=
+                                     mask_subtract(list_t_m_digit1_e[m1], list_h_texture[h])
+                                     if CONFIG["is_hour_higher"]
+                                     else list_t_m_digit1_e[m1])
+                if list_t_m_digit2_e[m2] is not None:
+                    t_emissive.paste(list_t_m_digit2_e[m2], (0, 0), mask=
+                                     mask_subtract(list_t_m_digit2_e[m2], list_h_texture[h])
+                                     if CONFIG["is_hour_higher"]
+                                     else list_t_m_digit2_e[m2])
+                t_emissive.save("./outputs/{}/assets/minecraft/textures/item/clock_{}{}.png".format(pack_dir, formatTime(h, m), CONFIG["optifine_emissive"]))
+                
             # Generate pack.png
             if h == CONFIG["pack_icon_time"][0] and m == CONFIG["pack_icon_time"][1]:
                 t_result.save("./outputs/{}/pack.png".format(pack_dir))
@@ -163,8 +224,11 @@ elif CONFIG["mode"] == "a":
             t_result.save("./outputs/{}/assets/minecraft/textures/item/clock_{}.png".format(pack_dir, formatTime(h, m)))
             
             # Generate emissive texture for HH:MM
-            if (list_h_texture_e[h] is not None) or (dict_m_texture_e[m] is not None):
+            if (t_bg_e is not None) or (list_h_texture_e[h] is not None) or (dict_m_texture_e[m] is not None):
                 t_emissive = Image.new("RGBA", t_bg.size)
+                if t_bg_e is not None:
+                    t_emissive.paste(t_bg_e, (0, 0), mask=
+                                     mask_subtract(mask_subtract(t_bg_e, list_h_texture[h]), dict_m_texture[m]))
                 if list_h_texture_e[h] is not None:
                     t_emissive.paste(list_h_texture_e[h], (0, 0), mask=
                                      list_h_texture_e[h]

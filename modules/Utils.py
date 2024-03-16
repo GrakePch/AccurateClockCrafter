@@ -18,3 +18,17 @@ def mask_subtract(i1, i2):
     result_mask = Image.new("L", i1.size)
     result_mask.putdata(result_alpha)
     return result_mask
+
+def formatTime(h, m):
+    return "{:02d}{:02d}".format(h, m)
+
+def getMinuteFromPNG(name):
+    if not name.endswith(".png"): return -1
+    try:
+        m = int(name[0:-4])
+        if 0 <= m < 60:
+            return int(name[0:-4])
+        else:
+            return -1
+    except:
+        return -1
