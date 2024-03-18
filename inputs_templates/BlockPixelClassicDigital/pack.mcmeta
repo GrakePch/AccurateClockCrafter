@@ -1,0 +1,9 @@
+{
+  "pack": {
+    "pack_format": 15,
+    "description": "§aBlock§cPixel §rClassic Clock \nby GrakePCH & Jakob.zero"
+  },
+  "acc_config": {
+    "mode": "a"
+  }
+}
