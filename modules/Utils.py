@@ -1,4 +1,7 @@
 from PIL import Image
+import json
+import pathlib
+import shutil
 
 def inv_interp(lower, upper, value):
     return (value - lower) / (upper - lower)
@@ -32,3 +35,42 @@ def getMinuteFromPNG(name):
             return -1
     except:
         return -1
+    
+def save_to_files(virtual_pack):
+    output_pack_dir = pathlib.Path("outputs") / virtual_pack["name"]
+
+    # Clear existing pack directory if it exists
+    if output_pack_dir.exists():
+        shutil.rmtree(output_pack_dir)
+
+    output_pack_dir.mkdir(parents=True, exist_ok=True)
+
+    # Save pack.mcmeta
+    with open(output_pack_dir / "pack.mcmeta", "w", encoding="utf-8") as f:
+        json.dump(virtual_pack["pack.mcmeta"], f, indent=4)
+
+    # Save item states
+    output_items_dir = output_pack_dir / "assets/minecraft/items"
+    for item_rel_path, item_data in virtual_pack["items"].items():
+        item_path = output_items_dir / item_rel_path
+        item_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(item_path, "w", encoding="utf-8") as f:
+            json.dump(item_data, f, indent=4)
+
+    # Save models
+    output_models_dir = output_pack_dir / "assets/minecraft/models"
+    for model_rel_path, model_data in virtual_pack["models"].items():
+        model_path = output_models_dir / model_rel_path
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(model_path, "w", encoding="utf-8") as f:
+            json.dump(model_data, f, indent=4)
+
+    # Save textures
+    output_textures_dir = output_pack_dir / "assets/minecraft/textures"
+    for texture_rel_path, texture_data in virtual_pack["textures"].items():
+        texture_path = output_textures_dir / texture_rel_path
+        texture_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(texture_path, "wb") as f:
+            f.write(texture_data)
+
+    print(f"Resource pack saved to {output_pack_dir.resolve()}")

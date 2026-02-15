@@ -1,0 +1,7 @@
+{
+  "meta_type": "analog",
+  "pack": {
+    "pack_format": 15,
+    "description": "§7Accurate §6Analog Clock§r\n§8JE 1.21.6+§r by GrakePCH"
+  }
+}
