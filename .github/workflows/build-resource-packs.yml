@@ -32,27 +32,54 @@ jobs:
       - name: Build packs
         run: python main.py
 
-      - name: Archive output packs
+      - name: Archive selected packs
         run: |
           mkdir -p dist
-          for dir in outputs/*; do
-            if [ -d "$dir" ]; then
-              name="$(basename "$dir")"
-              (cd outputs && zip -r "../dist/${name}.zip" "$name")
+          packs=(
+            "Analog_Clock"
+            "Giant_Analog_Clock"
+            "Square_Analog_Clock"
+            "Square_Digital_Clock"
+          )
+          for name in "${packs[@]}"; do
+            if [ ! -d "outputs/$name" ]; then
+              echo "Missing output pack: $name"
+              exit 1
             fi
+            (cd outputs && zip -r "../dist/${name}.zip" "$name")
           done
 
-      - name: Upload build artifacts
+      - name: Upload Analog_Clock zip
         uses: actions/upload-artifact@v4
         with:
-          name: resource-packs
-          path: |
-            dist/*.zip
-            outputs/**
+          name: Analog_Clock
+          path: dist/Analog_Clock.zip
+
+      - name: Upload Giant_Analog_Clock zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: Giant_Analog_Clock
+          path: dist/Giant_Analog_Clock.zip
+
+      - name: Upload Square_Analog_Clock zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: Square_Analog_Clock
+          path: dist/Square_Analog_Clock.zip
+
+      - name: Upload Square_Digital_Clock zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: Square_Digital_Clock
+          path: dist/Square_Digital_Clock.zip
 
       - name: Upload release assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.zip
+          files: |
+            dist/Analog_Clock.zip
+            dist/Giant_Analog_Clock.zip
+            dist/Square_Analog_Clock.zip
+            dist/Square_Digital_Clock.zip
           fail_on_unmatched_files: true
