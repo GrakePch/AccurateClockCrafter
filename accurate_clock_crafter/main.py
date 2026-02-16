@@ -7,9 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-import ACC_analog
-import ACC_digital
-
+from accurate_clock_crafter.builders.analog_clock_builder import build_analog_pack
+from accurate_clock_crafter.builders.digital_clock_builder import build_digital_pack
+from accurate_clock_crafter.core.pack_metadata import (
+    RESOURCE_COMPAT_1_21_5_TO_1_21_11,
+    build_pack_meta,
+)
 
 BASE_INPUT_DIR = Path("inputs_templates")
 BASE_OUTPUT_DIR = Path("outputs")
@@ -51,7 +54,6 @@ def _build_vanilla_clock_range_dispatch(source: str) -> dict:
     }
 
 
-# Matches the vanilla 1.21.4 clock item definition for unknown names.
 DEFAULT_CLOCK_MODEL_PAYLOAD = {
     "type": "minecraft:select",
     "property": "minecraft:context_dimension",
@@ -65,8 +67,8 @@ DEFAULT_CLOCK_MODEL_PAYLOAD = {
 }
 
 META_TYPE_TO_BUILDER: dict[str, Callable[[str], None]] = {
-    "analog": ACC_analog.build_pack,
-    "digital": ACC_digital.build_pack,
+    "analog": build_analog_pack,
+    "digital": build_digital_pack,
 }
 
 
@@ -75,7 +77,6 @@ class TemplatePack:
     name: str
     template_dir: Path
     meta_type: str
-    pack_meta: dict
 
     @property
     def display_name(self) -> str:
@@ -86,7 +87,14 @@ class TemplatePack:
         return BASE_OUTPUT_DIR / self.name
 
 
+@dataclass(slots=True)
+class VariantCase:
+    template: TemplatePack
+    model_payload: dict
+
+
 def discover_templates() -> list[TemplatePack]:
+    print("[build] Discovering templates...")
     templates: list[TemplatePack] = []
     if not BASE_INPUT_DIR.exists():
         raise FileNotFoundError(f"Missing {BASE_INPUT_DIR}")
@@ -111,7 +119,6 @@ def discover_templates() -> list[TemplatePack]:
                 name=entry.name,
                 template_dir=entry,
                 meta_type=meta_type.lower(),
-                pack_meta=meta.get("pack", {}),
             )
         )
 
@@ -119,6 +126,7 @@ def discover_templates() -> list[TemplatePack]:
 
 
 def build_templates(templates: list[TemplatePack]) -> list[TemplatePack]:
+    print("[build] Building template packs...")
     successful: list[TemplatePack] = []
     for template in templates:
         builder = META_TYPE_TO_BUILDER.get(template.meta_type)
@@ -131,7 +139,7 @@ def build_templates(templates: list[TemplatePack]) -> list[TemplatePack]:
         print(f"[build] {template.name} ({template.meta_type})")
         try:
             builder(template.name)
-        except Exception as exc:  # pragma: no cover - guardrail
+        except Exception as exc:  # pragma: no cover
             print(f"[error] {template.name}: {exc}")
             continue
 
@@ -140,13 +148,8 @@ def build_templates(templates: list[TemplatePack]) -> list[TemplatePack]:
     return successful
 
 
-@dataclass(slots=True)
-class VariantCase:
-    template: TemplatePack
-    model_payload: dict
-
-
 def load_variant_cases(templates: list[TemplatePack]) -> list[VariantCase]:
+    print("[build] Loading built variant cases...")
     cases: list[VariantCase] = []
     for template in templates:
         clock_path = template.output_dir / "assets/minecraft/items/clock.json"
@@ -166,17 +169,10 @@ def load_variant_cases(templates: list[TemplatePack]) -> list[VariantCase]:
     return cases
 
 
-def write_pack_mcmeta(destination: Path, cases: list[VariantCase]) -> None:
-    pack_formats = [
-        case.template.pack_meta.get("pack_format") for case in cases if case.template.pack_meta
-    ]
-    pack_format = max(pack_formats) if pack_formats else 15
-    description_lines = ["§7Accurate §6Clocks§r", "§8Rename clocks to select variants§r"]
+def write_pack_mcmeta(destination: Path) -> None:
+    description = "§7Accurate §6Clocks§r\n§8Rename clocks to select variants§r"
     pack_data = {
-        "pack": {
-            "pack_format": pack_format,
-            "description": "\n".join(description_lines),
-        },
+        "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_5_TO_1_21_11),
         "meta_type": "composite",
     }
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -235,7 +231,8 @@ def merge_variant_assets(destination_assets: Path, templates: list[TemplatePack]
             shutil.copy2(file, dest_file)
 
 
-def assemble_accurate_clocks(templates: list[TemplatePack]) -> None:
+def _assemble_composite_pack(templates: list[TemplatePack]) -> None:
+    print("[build] Assembling AccurateClocks composite pack...")
     target_dir = BASE_OUTPUT_DIR / ACCURATE_PACK_NAME
     if target_dir.exists():
         shutil.rmtree(target_dir)
@@ -246,13 +243,13 @@ def assemble_accurate_clocks(templates: list[TemplatePack]) -> None:
         print("[warn] No variants available for AccurateClocks; nothing to assemble.")
         return
 
-    write_pack_mcmeta(target_dir / "pack.mcmeta", cases)
+    write_pack_mcmeta(target_dir / "pack.mcmeta")
     merge_variant_assets(target_dir / "assets", [case.template for case in cases])
     write_combined_clock(target_dir / "assets/minecraft/items/clock.json", cases)
     print(f"[done] AccurateClocks generated with {len(cases)} variants.")
 
 
-def main() -> None:
+def build_composite_pack() -> None:
     templates = discover_templates()
     if not templates:
         print("[warn] No templates found in inputs_templates.")
@@ -263,8 +260,12 @@ def main() -> None:
         print("[warn] No templates built successfully.")
         return
 
-    assemble_accurate_clocks(built_templates)
+    _assemble_composite_pack(built_templates)
+
+
+def run() -> None:
+    build_composite_pack()
 
 
 if __name__ == "__main__":
-    main()
+    run()
