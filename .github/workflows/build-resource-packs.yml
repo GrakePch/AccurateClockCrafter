@@ -46,7 +46,9 @@ jobs:
               echo "Missing output pack: $name"
               exit 1
             fi
-            (cd outputs && zip -r "../dist/${name}.zip" "$name")
+            rm -f "dist/${name}.zip"
+            # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
+            (cd "outputs/$name" && zip -r "../../dist/${name}.zip" .)
           done
 
       - name: Upload Analog_Clock zip
