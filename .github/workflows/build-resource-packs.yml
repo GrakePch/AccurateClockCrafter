@@ -40,6 +40,7 @@ jobs:
             "Giant_Analog_Clock"
             "Square_Analog_Clock"
             "Square_Digital_Clock"
+            "AccurateClocks"
           )
           for name in "${packs[@]}"; do
             if [ ! -d "outputs/$name" ]; then
@@ -75,6 +76,12 @@ jobs:
           name: Square_Digital_Clock
           path: outputs/Square_Digital_Clock/**
 
+      - name: Upload AccurateClocks artifact (unpacked)
+        uses: actions/upload-artifact@v4
+        with:
+          name: AccurateClocks
+          path: outputs/AccurateClocks/**
+
       - name: Upload release assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
@@ -84,4 +91,5 @@ jobs:
             dist/Giant_Analog_Clock.zip
             dist/Square_Analog_Clock.zip
             dist/Square_Digital_Clock.zip
+            dist/AccurateClocks.zip
           fail_on_unmatched_files: true
