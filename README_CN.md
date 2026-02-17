@@ -7,10 +7,9 @@
 
 将时钟重命名为下列名称，以获得不同外观！
 
-- Analog Clock
-
-- Square Analog Clock
-
-- Square Digital Clock
-
-- Giant Analog Clock
+| Name | Model |
+| ---- | ----- |
+| Analog Clock | <img src="https://github.com/GrakePch/AccurateClockCrafter/blob/master/images/Analog%20Clock.png?raw=true" width="300" alt="Analog Clock"/> |
+| Square Analog Clock | <img src="https://github.com/GrakePch/AccurateClockCrafter/blob/master/images/Square%20Analog%20Clock.png?raw=true" width="300" alt="Analog Clock"/> |
+| Square Digital Clock | <img src="https://github.com/GrakePch/AccurateClockCrafter/blob/master/images/Square%20Digital%20Clock.png?raw=true" width="300" alt="Analog Clock"/> |
+| Giant Analog Clock | <img src="https://github.com/GrakePch/AccurateClockCrafter/blob/master/images/Giant%20Analog%20Clock.png?raw=true" width="300" alt="Analog Clock"/> |
