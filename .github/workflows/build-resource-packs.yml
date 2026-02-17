@@ -58,11 +58,12 @@ jobs:
           # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
           (cd "outputs/AccurateClocks" && zip -r "../../dist/${ARCHIVE_NAME}" .)
 
-      - name: Upload AccurateClocks zip artifact
+      - name: Upload AccurateClocks artifact (unpacked content)
         uses: actions/upload-artifact@v4
         with:
           name: AccurateClocks
-          path: dist/${{ env.ARCHIVE_NAME }}
+          path: outputs/AccurateClocks/**
+          if-no-files-found: error
 
       - name: Upload release assets
         if: github.event_name == 'release'
