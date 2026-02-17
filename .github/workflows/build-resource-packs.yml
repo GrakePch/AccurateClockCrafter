@@ -43,36 +43,6 @@ jobs:
           # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
           (cd "outputs/AccurateClocks" && zip -r "../../dist/AccurateClocks.zip" .)
 
-      - name: Upload Analog_Clock artifact (unpacked)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Analog_Clock
-          path: outputs/Analog_Clock/**
-
-      - name: Upload Giant_Analog_Clock artifact (unpacked)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Giant_Analog_Clock
-          path: outputs/Giant_Analog_Clock/**
-
-      - name: Upload Square_Analog_Clock artifact (unpacked)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Square_Analog_Clock
-          path: outputs/Square_Analog_Clock/**
-
-      - name: Upload Square_Digital_Clock artifact (unpacked)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Square_Digital_Clock
-          path: outputs/Square_Digital_Clock/**
-
-      - name: Upload AccurateClocks artifact (unpacked)
-        uses: actions/upload-artifact@v4
-        with:
-          name: AccurateClocks
-          path: outputs/AccurateClocks/**
-
       - name: Upload release assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2

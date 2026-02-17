@@ -17,6 +17,7 @@ from accurate_clock_crafter.core.pack_metadata import (
 BASE_INPUT_DIR = Path("inputs_templates")
 BASE_OUTPUT_DIR = Path("outputs")
 ACCURATE_PACK_NAME = "AccurateClocks"
+ROOT_ICON_PATH = Path("icon.png")
 
 
 def _build_vanilla_clock_entries() -> list[dict]:
@@ -170,13 +171,20 @@ def load_variant_cases(templates: list[TemplatePack]) -> list[VariantCase]:
 
 
 def write_pack_mcmeta(destination: Path) -> None:
-    description = "§7Accurate Clocks§r\n§8JE 1.21.6+§r by GrakePCH"
+    description = "§7Accurate §6Clocks§r\n§8JE 1.21.6+§r by GrakePCH"
     pack_data = {
         "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_6_AND_ABOVE),
     }
     destination.parent.mkdir(parents=True, exist_ok=True)
     with open(destination, "w", encoding="utf-8") as f:
         json.dump(pack_data, f, ensure_ascii=False, indent=4)
+
+
+def copy_pack_icon(destination: Path) -> None:
+    if not ROOT_ICON_PATH.exists():
+        raise FileNotFoundError(f"Missing {ROOT_ICON_PATH}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT_ICON_PATH, destination)
 
 
 def build_combined_clock_json(cases: list[VariantCase]) -> dict:
@@ -243,6 +251,7 @@ def _assemble_composite_pack(templates: list[TemplatePack]) -> None:
         return
 
     write_pack_mcmeta(target_dir / "pack.mcmeta")
+    copy_pack_icon(target_dir / "pack.png")
     merge_variant_assets(target_dir / "assets", [case.template for case in cases])
     write_combined_clock(target_dir / "assets/minecraft/items/clock.json", cases)
     print(f"[done] AccurateClocks generated with {len(cases)} variants.")
