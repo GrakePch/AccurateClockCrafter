@@ -1,7 +1,8 @@
 # 精准时钟
 
-本系列资源包为您提供分钟级精准的报时。
-[演示视频](https://youtu.be/B5HugHxZtt0)
+本资源包为您提供分钟级精准的报时。
+
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=116086875883225&bvid=BV1ATZ2B7E6M&cid=36128555248&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
 
 ## 用法
 

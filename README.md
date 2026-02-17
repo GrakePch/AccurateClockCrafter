@@ -1,7 +1,8 @@
 # Accurate Clocks
 
 Accurate clocks can tell you time in minute's level of accuracy!
-[Demo video](https://youtu.be/B5HugHxZtt0)
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/B5HugHxZtt0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 [[简体中文介绍]](https://github.com/GrakePch/AccurateClockCrafter/blob/master/README_CN.md)  
 
