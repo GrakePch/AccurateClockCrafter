@@ -61,7 +61,7 @@ jobs:
       - name: Upload AccurateClocks zip artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARCHIVE_NAME }}
+          name: AccurateClocks
           path: dist/${{ env.ARCHIVE_NAME }}
 
       - name: Upload release assets
