@@ -11,7 +11,7 @@ from accurate_clock_crafter.core.model_dispatch import (
     validate_virtual_pack,
 )
 from accurate_clock_crafter.core.pack_metadata import (
-    RESOURCE_COMPAT_1_21_5_TO_1_21_11,
+    RESOURCE_COMPAT_1_21_6_AND_ABOVE,
     build_pack_meta,
 )
 from accurate_clock_crafter.io.assets_loader import (
@@ -196,7 +196,7 @@ def build_virtual_pack(pack: dict[str, Any]) -> None:
     description = template_meta.get("pack", {}).get("description", "")
     pack["pack_mcmeta"] = {
         "meta_type": template_meta.get("meta_type", "analog"),
-        "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_5_TO_1_21_11),
+        "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_6_AND_ABOVE),
     }
 
     index_textures(template_dir, pack)

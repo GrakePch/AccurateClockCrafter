@@ -10,7 +10,7 @@ from typing import Callable
 from accurate_clock_crafter.builders.analog_clock_builder import build_analog_pack
 from accurate_clock_crafter.builders.digital_clock_builder import build_digital_pack
 from accurate_clock_crafter.core.pack_metadata import (
-    RESOURCE_COMPAT_1_21_5_TO_1_21_11,
+    RESOURCE_COMPAT_1_21_6_AND_ABOVE,
     build_pack_meta,
 )
 
@@ -170,10 +170,9 @@ def load_variant_cases(templates: list[TemplatePack]) -> list[VariantCase]:
 
 
 def write_pack_mcmeta(destination: Path) -> None:
-    description = "§7Accurate §6Clocks§r\n§8Rename clocks to select variants§r"
+    description = "§7Accurate Clocks§r\n§8JE 1.21.6+§r by GrakePCH"
     pack_data = {
-        "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_5_TO_1_21_11),
-        "meta_type": "composite",
+        "pack": build_pack_meta(description, RESOURCE_COMPAT_1_21_6_AND_ABOVE),
     }
     destination.parent.mkdir(parents=True, exist_ok=True)
     with open(destination, "w", encoding="utf-8") as f:

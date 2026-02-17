@@ -35,22 +35,13 @@ jobs:
       - name: Archive selected packs
         run: |
           mkdir -p dist
-          packs=(
-            "Analog_Clock"
-            "Giant_Analog_Clock"
-            "Square_Analog_Clock"
-            "Square_Digital_Clock"
-            "AccurateClocks"
-          )
-          for name in "${packs[@]}"; do
-            if [ ! -d "outputs/$name" ]; then
-              echo "Missing output pack: $name"
-              exit 1
-            fi
-            rm -f "dist/${name}.zip"
-            # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
-            (cd "outputs/$name" && zip -r "../../dist/${name}.zip" .)
-          done
+          if [ ! -d "outputs/AccurateClocks" ]; then
+            echo "Missing output pack: AccurateClocks"
+            exit 1
+          fi
+          rm -f "dist/AccurateClocks.zip"
+          # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
+          (cd "outputs/AccurateClocks" && zip -r "../../dist/AccurateClocks.zip" .)
 
       - name: Upload Analog_Clock artifact (unpacked)
         uses: actions/upload-artifact@v4
@@ -87,9 +78,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/Analog_Clock.zip
-            dist/Giant_Analog_Clock.zip
-            dist/Square_Analog_Clock.zip
-            dist/Square_Digital_Clock.zip
             dist/AccurateClocks.zip
           fail_on_unmatched_files: true

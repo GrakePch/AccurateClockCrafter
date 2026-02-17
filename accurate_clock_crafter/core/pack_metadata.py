@@ -12,12 +12,12 @@ class ResourceCompatibility:
     fallback_pack_format: int
 
 
-RESOURCE_COMPAT_1_21_5_TO_1_21_11 = ResourceCompatibility(
-    min_major=55,
+RESOURCE_COMPAT_1_21_6_AND_ABOVE = ResourceCompatibility(
+    min_major=63,
     min_minor=0,
-    max_major=75,
+    max_major=999,
     max_minor=0,
-    fallback_pack_format=55,
+    fallback_pack_format=63,
 )
 
 
