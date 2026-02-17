@@ -1,5 +1,8 @@
 outputs/
 modules/__pycache__/
+__pycache__
 
 inputs/
 !inputs/Put template here
+
+agent.md

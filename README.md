@@ -29,9 +29,9 @@ Before running the script:
     - Put the texture files of the minute hand in **inputs/[your_pack_name]/m/** and rename them to the minute they represents respectively. (e.g. a minute hand pointing to HH:05 should be named as 05.png or 5.png)
 
 
-Then, change the directory of the terminal to the root of this project (the same directory of file ACC.py) and run  
+Then, change the terminal directory to the root of this project and run  
 ```
-python .\ACC.py
+python .\main.py
 ```
 Wait until the program completes, the generated files can be found in **outputs/**  
 
@@ -40,7 +40,6 @@ The configuration code `"acc_config": {...}` will not appear in the generated pa
 ```json
 {
   "pack": {
-    "pack_format": "[pack format]",
     "description": "[your description]"
   },
   "acc_config": {
@@ -51,6 +50,7 @@ The configuration code `"acc_config": {...}` will not appear in the generated pa
 }
 
 ```
+Generated `pack.mcmeta` includes `pack_format`, `supported_formats`, `min_format`, and `max_format` for the 1.21.5-1.21.11 range.
 - `"mode":`
     - `"d"`: Digital (default)
     - `"a"`: Analog

@@ -10,6 +10,16 @@
 需要库：**Pillow**  
 如需安装，在终端运行 ```pip install pillow```
 
+## 项目结构
+
+- `main.py`：顶层入口（运行 `python main.py`）。
+- `accurate_clock_crafter/main.py`：编排入口（可运行 `python -m accurate_clock_crafter.main`）。
+- `accurate_clock_crafter/builders/`：指针与数位时钟构建器。
+- `accurate_clock_crafter/core/`：时间曲线、模型分发、pack 元数据策略。
+- `accurate_clock_crafter/io/`：模板读取与资源包写盘。
+- `accurate_clock_crafter/utils/`：命名、数学、图像工具函数。
+
+
 在运行脚本前：
 - 将 pack.mcmeta 文件放在 **inputs/[your_pack_name]/** 中。
 - 将表盘贴图放在 **inputs/[your_pack_name]/** 中，并且重命名为 **bg.png** 。
@@ -27,18 +37,22 @@
     ```
     - 将分针贴图放在 **inputs/[your_pack_name]/m/** 中，并且将他们重命名为各自代表的分钟时刻。（例如，代表 HH:05 的分针应当命名为 05.png 或 5.png）
 
-之后，将终端的路径改为本项目根目录（与ACC.py文件同一目录）并且运行
+之后，将终端路径切换到本项目根目录并运行
 ```
-python .\ACC.py
+python .\main.py
 ```
-等待程序完成，生成的文件将出现在 **outputs/** 中
+等待程序完成，生成的文件将出现在 **outputs/** 中（单包输出）：
+- `Analog_Clock`
+- `Giant_Analog_Clock`
+- `Square_Analog_Clock`
+- `Square_Digital_Clock`
+- `AccurateClocks`
 
 ### 在 pack.mcmeta 中自定义配置
 配置选项代码 `"acc_config": {...}` 将不会出现在导出的 pack.mcmeta 中。
 ```json
 {
   "pack": {
-    "pack_format": "[pack format]",
     "description": "[your description]"
   },
   "acc_config": {
@@ -60,7 +74,7 @@ python .\ACC.py
 
 ## 模板
 
-**inputs_templates/** 中有若干模板。将其中一个的 inputs 文件夹替换项目根目录的 **inputs/** 并且运行脚本以获得可用的资源包供参考。
+**inputs_templates/** 中有若干模板，脚本会直接从该目录读取并在 **outputs/** 生成对应资源包。
 
 ## TODOs
 
