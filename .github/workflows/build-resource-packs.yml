@@ -6,6 +6,7 @@ on:
     types: [published]
   push:
     branches: ["main", "master"]
+    tags: ["v*"]
   pull_request:
 
 permissions:
@@ -32,6 +33,20 @@ jobs:
       - name: Build packs
         run: python main.py
 
+      - name: Determine archive name
+        run: |
+          archive_name="AccurateClocks.zip"
+          tag_name=""
+          if [ "${{ github.event_name }}" = "release" ]; then
+            tag_name="${{ github.event.release.tag_name }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            tag_name="${{ github.ref_name }}"
+          fi
+          if [ -n "$tag_name" ]; then
+            archive_name="AccurateClocks_${tag_name}.zip"
+          fi
+          echo "ARCHIVE_NAME=$archive_name" >> "$GITHUB_ENV"
+
       - name: Archive selected packs
         run: |
           mkdir -p dist
@@ -39,14 +54,20 @@ jobs:
             echo "Missing output pack: AccurateClocks"
             exit 1
           fi
-          rm -f "dist/AccurateClocks.zip"
+          rm -f "dist/${ARCHIVE_NAME}"
           # Zip pack contents (pack.mcmeta/assets at zip root), not the parent folder.
-          (cd "outputs/AccurateClocks" && zip -r "../../dist/AccurateClocks.zip" .)
+          (cd "outputs/AccurateClocks" && zip -r "../../dist/${ARCHIVE_NAME}" .)
+
+      - name: Upload AccurateClocks zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARCHIVE_NAME }}
+          path: dist/${{ env.ARCHIVE_NAME }}
 
       - name: Upload release assets
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/AccurateClocks.zip
+            dist/${{ env.ARCHIVE_NAME }}
           fail_on_unmatched_files: true
